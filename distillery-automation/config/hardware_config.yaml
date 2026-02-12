@@ -1,0 +1,99 @@
+# Hardware Configuration for Distillery Automation
+# Pin assignments and hardware parameters
+
+# GPIO Pin Assignments (BCM numbering)
+gpio:
+  # Load Cell Data Pins (HX711 or similar)
+  load_cells:
+    mash_tank:
+      data_pin: 5
+      clock_pin: 6
+    still:
+      data_pin: 13
+      clock_pin: 19
+    discharge_tank:
+      data_pin: 26
+      clock_pin: 21
+    distillate:
+      data_pin: 20
+      clock_pin: 16
+  
+  # Thermocouple Pins (SPI devices)
+  thermocouples:
+    still_mash:
+      cs_pin: 8
+    condenser:
+      cs_pin: 7
+    ambient:
+      cs_pin: 25
+  
+  # Heating Elements (SSR control via PWM)
+  heating:
+    element_1:
+      pin: 12
+      pwm_frequency: 1  # Hz, for SSR
+    element_2:
+      pin: 16
+      pwm_frequency: 1  # Hz, for SSR
+  
+  # Pumps (Relay control)
+  pumps:
+    mash_transfer:
+      pin: 17
+    condenser_cooling:
+      pin: 27
+    discharge:
+      pin: 22
+    cip:
+      pin: 23
+  
+  # Valves (Relay control)
+  valves:
+    mash_inlet:
+      pin: 24
+    heads:
+      pin: 25
+    hearts:
+      pin: 8
+    tails:
+      pin: 7
+    discharge:
+      pin: 1
+    cip:
+      pin: 12
+
+# Hardware Specifications
+hardware:
+  heating_elements:
+    count: 2
+    power_watts: 5500
+    max_duty_cycle: 100  # percentage
+    
+  still:
+    capacity_liters: 200
+    
+  tanks:
+    mash_capacity_liters: 1050
+    discharge_capacity_liters: 1050
+    
+  load_cells:
+    max_weight_kg: 1200  # Maximum capacity
+    sample_rate_hz: 10   # Reading frequency
+
+# Safety Limits
+safety:
+  temperature:
+    max_still_temp_c: 105
+    max_condenser_temp_c: 60
+    emergency_shutdown_temp_c: 110
+    
+  weight:
+    min_still_weight_kg: 5  # Below this triggers empty alarm
+    max_still_weight_kg: 220  # Above this triggers overfill alarm
+    
+  timing:
+    max_pump_runtime_minutes: 30  # Safety timeout
+    max_heating_time_minutes: 180  # Safety timeout
+    watchdog_timeout_seconds: 10  # System heartbeat
+
+# Update this file as hardware is added or modified

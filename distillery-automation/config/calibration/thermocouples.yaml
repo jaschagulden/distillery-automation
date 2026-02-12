@@ -1,0 +1,35 @@
+# Thermocouple Calibration Data
+# Thermocouples typically need minimal calibration if using quality amplifiers
+# However, offsets can be applied if needed
+
+thermocouples:
+  still_mash:
+    offset_c: 0.0  # Temperature offset to apply
+    type: "K"  # Thermocouple type (K, J, T, etc.)
+    last_verified: null
+    verification_temp_c: null
+    notes: "Pending verification"
+    
+  condenser:
+    offset_c: 0.0
+    type: "K"
+    last_verified: null
+    verification_temp_c: null
+    notes: "Pending verification"
+    
+  ambient:
+    offset_c: 0.0
+    type: "K"
+    last_verified: null
+    verification_temp_c: null
+    notes: "Pending verification"
+
+# Verification Procedure
+# 1. Use ice water bath (0°C) for low point
+# 2. Use boiling water (100°C at sea level) for high point
+# 3. Record readings and calculate offset if needed
+# 4. Most quality amplifiers (MAX31855, etc.) are accurate to ±2°C
+
+verification_schedule:
+  frequency_days: 90
+  next_due_date: null

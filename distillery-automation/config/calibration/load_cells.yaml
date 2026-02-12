@@ -1,0 +1,42 @@
+# Load Cell Calibration Data
+# Each load cell must be calibrated before use
+# Calibration process: 
+#   1. Tare with empty vessel
+#   2. Apply known weight
+#   3. Record raw value
+#   4. Calculate calibration factor
+
+load_cells:
+  mash_tank:
+    calibration_factor: 1.0  # Raw reading to kg conversion
+    tare_value: 0  # Raw reading when empty
+    last_calibrated: null
+    calibration_weight_kg: null  # Known weight used for calibration
+    notes: "Pending calibration"
+    
+  still:
+    calibration_factor: 1.0
+    tare_value: 0
+    last_calibrated: null
+    calibration_weight_kg: null
+    notes: "Pending calibration"
+    
+  discharge_tank:
+    calibration_factor: 1.0
+    tare_value: 0
+    last_calibrated: null
+    calibration_weight_kg: null
+    notes: "Pending calibration"
+    
+  distillate:
+    calibration_factor: 1.0
+    tare_value: 0
+    last_calibrated: null
+    calibration_weight_kg: null
+    notes: "Pending calibration"
+
+# Calibration Verification
+# Recommended: Re-calibrate monthly or after any mechanical changes
+verification_schedule:
+  frequency_days: 30
+  next_due_date: null

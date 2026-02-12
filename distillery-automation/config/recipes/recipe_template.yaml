@@ -1,0 +1,72 @@
+# Recipe Template for Distillation Process
+# Copy this file and modify parameters for each recipe
+
+recipe_name: "Template Recipe"
+description: "Base template for distillation recipes"
+
+# Process Parameters
+process:
+  # Fill Stage
+  fill:
+    target_weight_kg: 180  # How much mash to transfer to still
+    max_fill_time_minutes: 15
+    
+  # Heating Stage
+  heating:
+    target_temp_c: 78.3  # Ethanol boiling point at sea level
+    heating_rate_c_per_min: 2.0  # Target heating rate
+    pid_params:
+      kp: 50.0  # Proportional gain
+      ki: 0.1   # Integral gain
+      kd: 10.0  # Derivative gain
+      
+  # Distillation Stage
+  distillation:
+    # Flow rate control
+    target_flow_rate_ml_per_min: 500
+    flow_control_pid:
+      kp: 2.0
+      ki: 0.05
+      kd: 0.5
+    
+    # Collection targets (weights in kg)
+    heads_weight_kg: 2.0
+    hearts_weight_kg: 15.0
+    tails_weight_kg: 3.0
+    
+    # Temperature monitoring
+    max_vapor_temp_c: 82.0
+    min_condenser_temp_c: 15.0
+    max_condenser_temp_c: 40.0
+    
+  # Discharge Stage
+  discharge:
+    expected_residue_kg: 150  # Approximate weight of spent mash
+    discharge_timeout_minutes: 20
+    stable_weight_threshold_kg: 0.5  # Weight change tolerance
+    stable_time_seconds: 30  # Time weight must be stable
+    
+  # CIP (Clean-In-Place) Stage
+  cip:
+    flush_time_seconds: 120  # How long to run CIP water
+    drain_time_seconds: 60   # Time to drain after CIP
+
+# Safety Parameters (overrides for this recipe)
+safety_overrides:
+  max_still_temp_c: 100  # Recipe-specific limit
+  
+# Notes
+notes: |
+  This is a template. Create specific recipes by copying this file
+  and adjusting parameters based on:
+  - Type of mash (grain, fruit, etc.)
+  - Desired product (whiskey, vodka, rum, etc.)
+  - Environmental conditions (altitude, ambient temp)
+  
+  Always test new recipes with close supervision!
+
+# Metadata
+created_by: "System"
+created_date: "2025-02-11"
+last_modified: "2025-02-11"
+version: "1.0"
