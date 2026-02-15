@@ -1,186 +1,219 @@
-# QUICK START GUIDE
+# Quick Start Guide - Distillery Automation
 
-## What You Just Downloaded
-
-This is the complete initial project structure for the Distillery Automation System!
-
-## What's Inside
-
-```
-distillery-automation/
-├── README.md                  # Project overview
-├── ARCHITECTURE.md            # System design documentation
-├── CHANGELOG.md               # Version history
-├── requirements.txt           # Python dependencies
-├── .gitignore                # Git ignore rules
-│
-├── config/                   # Configuration files
-│   ├── hardware_config.yaml  # Pin assignments & specs
-│   ├── recipes/              # Recipe templates
-│   └── calibration/          # Sensor calibration data
-│
-├── src/                      # Source code
-│   ├── main.py              # Main application
-│   ├── hardware/            # Hardware interfaces (to be built)
-│   ├── controllers/         # Control algorithms (to be built)
-│   ├── sequences/           # Process sequences (to be built)
-│   ├── safety/              # Safety systems (to be built)
-│   ├── gui/                 # User interface (to be built)
-│   └── utils/               # Utilities (to be built)
-│
-├── tests/                    # Test scripts
-│   └── hardware_test_suite.py
-│
-├── docs/                     # Documentation
-│   ├── GIT_SETUP.md         # How to use Git/GitHub
-│   ├── hardware_specs.md    # Hardware specifications
-│   ├── calibration_procedures.md
-│   └── operational_manual.md
-│
-├── logs/                     # Runtime logs (created)
-└── data/                     # Data storage (created)
-```
-
-## Next Steps
-
-### 1. Extract the Archive
-
-**On Raspberry Pi / Linux:**
-```bash
-tar -xzf distillery-automation.tar.gz
-cd distillery-automation
-```
-
-**On Windows:**
-- Right-click the .tar.gz file
-- Extract using 7-Zip or similar
-- Navigate to the folder in Command Prompt or PowerShell
-
-**On macOS:**
-- Double-click the .tar.gz file (or use Terminal: `tar -xzf distillery-automation.tar.gz`)
-- Navigate to the folder in Terminal
-
-### 2. Set Up Git & Push to GitHub
-
-Follow the detailed instructions in: `docs/GIT_SETUP.md`
-
-**Quick version:**
-```bash
-cd distillery-automation
-
-# Initialize git
-git init
-
-# Add all files
-git add .
-
-# First commit
-git commit -m "Initial commit: Project structure and documentation"
-
-# Add your GitHub repository (replace YOUR_REPO_URL)
-git remote add origin YOUR_REPO_URL
-
-# Push to GitHub
-git push -u origin main
-```
-
-### 3. Set Up Python Environment (on Raspberry Pi)
-
-```bash
-# Update system
-sudo apt-get update
-sudo apt-get upgrade -y
-
-# Install Python and pip if needed
-sudo apt-get install python3-pip python3-venv -y
-
-# Create virtual environment
-python3 -m venv venv
-
-# Activate it
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### 4. Test the Basic Setup
-
-```bash
-# Activate virtual environment
-source venv/bin/activate
-
-# Run main (won't do much yet, but verifies setup)
-python src/main.py
-
-# Run test suite (shows what needs to be built)
-python tests/hardware_test_suite.py
-```
-
-### 5. Start Building Hardware Modules
-
-**We'll build these together in order:**
-1. Load cell interface (`src/hardware/load_cell.py`)
-2. Thermocouple interface (`src/hardware/thermocouple.py`)
-3. Relay control (`src/hardware/relay.py`)
-4. Pump control (`src/hardware/pump.py`)
-5. Valve control (`src/hardware/valve.py`)
-6. PID controller (`src/controllers/pid_controller.py`)
-7. Heating controller (`src/controllers/heating_controller.py`)
-8. Process sequences (`src/sequences/...`)
-9. Safety monitor (`src/safety/safety_monitor.py`)
-10. GUI (`src/gui/...`)
-
-## Important Files to Review
-
-1. **README.md** - Overall project description
-2. **ARCHITECTURE.md** - How everything fits together
-3. **docs/GIT_SETUP.md** - Git and GitHub instructions
-4. **config/hardware_config.yaml** - Pin assignments (update as you wire things)
-5. **docs/hardware_specs.md** - Shopping list and specs
-
-## Collaboration
-
-When your collaborator joins:
-1. Add them to your GitHub repository
-2. They run: `git clone YOUR_REPO_URL`
-3. They follow step 3 above to set up Python environment
-4. Ready to code together!
-
-## Daily Workflow
-
-```bash
-# Before starting work
-git pull
-
-# Make changes to files...
-
-# Commit and push
-git add .
-git commit -m "Description of what you did"
-git push
-```
-
-## Questions or Issues?
-
-- Check the documentation in `docs/`
-- Review `ARCHITECTURE.md` for system design
-- Look at `CHANGELOG.md` to see what's been done
-- Create GitHub issues to track tasks
-
-## What's Next?
-
-Let's decide which hardware component to build first! 
-
-I recommend starting with:
-1. **Load cell** - Easy to test, fundamental for operation
-2. **Thermocouple** - Important for safety
-3. **Relay** - Needed to control everything else
-
-Let me know what hardware you have on hand or what you'd like to start with!
+**Fast reference for common tasks - detailed info in README.md and session docs**
 
 ---
 
-**Created:** 2025-02-11  
-**Team:** Distillery Automation Project  
-**Status:** Initial Setup Complete ✓
+## Connecting to the Pi
+```bash
+ssh pi@distillery-pi.local
+cd ~/distillery-automation
+```
+
+---
+
+## Testing Hardware
+
+### Test Load Cells (Weight Platform)
+```bash
+python3 weigh.py
+```
+- Shows real-time weight
+- Press **Ctrl+C** to stop
+
+### Test MOSFET HAT (Switches/Relays)
+```bash
+python3 src/hardware/mosfet_hat.py
+```
+- Cycles all 8 channels
+- Watch channel 5 test load
+
+### Test Thermocouple HAT (Temperature Sensors)
+```bash
+python3 src/hardware/thermocouple_hat.py
+```
+- Shows all 8 channels
+- Channels 1 & 2 are K-type
+
+### Recalibrate Load Cells
+```bash
+python3 calibrate_hx711.py
+```
+- Follow prompts
+- Need known weight
+
+---
+
+## Checking System Status
+
+### Verify HATs Detected
+```bash
+sudo i2cdetect -y 1
+```
+- Should show I2C addresses (like 0x30)
+
+### Check I2C Enabled
+```bash
+sudo raspi-config
+```
+- Interface Options > I2C > Enable
+
+### View Calibration Data
+```bash
+cat calibration_data.txt
+```
+
+---
+
+## Common Tasks
+
+### Update from GitHub
+```bash
+cd ~/distillery-automation
+git pull
+```
+
+### Save Changes to GitHub
+```bash
+git add .
+git commit -m "Description of changes"
+git push
+```
+
+### Reboot Pi
+```bash
+sudo reboot
+```
+
+### Shutdown Pi Safely
+```bash
+sudo shutdown -h now
+```
+Wait for green LED to stop blinking before unplugging power
+
+---
+
+## File Locations
+
+**Test Scripts:**
+- `weigh.py` - Weight monitor
+- `test_hx711.py` - Load cell test
+- `calibrate_hx711.py` - Calibration tool
+- `src/hardware/mosfet_hat.py` - MOSFET test
+- `src/hardware/thermocouple_hat.py` - Thermocouple test
+
+**Data Files:**
+- `calibration_data.txt` - Load cell calibration
+- `data/` - Data logging (future)
+- `logs/` - System logs (future)
+
+**Documentation:**
+- `README.md` - Main project documentation
+- `SESSION_3_COMPLETE.md` - Latest session notes
+- `ARCHITECTURE.md` - System design
+- `CHANGELOG.md` - Version history
+
+---
+
+## Hardware Configuration
+
+**Current Stack (Bottom to Top):**
+1. Raspberry Pi 4B
+2. 8-MOSFET HAT (Stack 0)
+3. 8-Thermocouple HAT (Stack 0)
+4. Breakout HAT (HX711 connected)
+
+**Load Cells:**
+- GPIO 5 = DT (Data)
+- GPIO 6 = SCK (Clock)
+
+**DIP Switches:**
+- Both Sequent HATs: Stack 0
+- Don't change unless adding more HATs
+
+---
+
+## Troubleshooting Quick Fixes
+
+**Load cells not working:**
+```bash
+cd ~/hx711py
+sudo python3 setup.py install
+```
+
+**MOSFET HAT not working:**
+```bash
+cd ~/8mosind-rpi/python
+sudo python3 setup.py install
+```
+
+**Thermocouple HAT not working:**
+```bash
+cd ~/smtc-rpi
+sudo make install
+```
+
+**Enable I2C if HATs not detected:**
+```bash
+sudo raspi-config
+# Interface Options > I2C > Enable
+sudo reboot
+```
+
+---
+
+## Starting a New Session with Claude
+
+Say this to Claude:
+```
+Claude - distillery project at github.com/jaschagulden/distillery-automation. 
+Read SESSION_3_COMPLETE.md. Ready to [describe your task].
+```
+
+Example:
+```
+Claude - distillery project at github.com/jaschagulden/distillery-automation. 
+Read SESSION_3_COMPLETE.md. Ready to wire the pumps to the MOSFET HAT.
+```
+
+---
+
+## Safety Reminders
+
+⚠️ **Current System:**
+- Manual monitoring REQUIRED
+- Safety systems NOT yet implemented
+- DO NOT leave unattended
+- Temperature limits not automatic
+
+🔨 **In Development:**
+- Automatic over-temperature shutdown
+- Emergency stop system
+- Watchdog monitoring
+- Alert notifications
+
+---
+
+## Getting Help
+
+**Within a Session:**
+- Ask Claude to explain any command before running it
+- Request step-by-step breakdowns
+- Say "I don't understand" - Claude will clarify
+
+**Between Sessions:**
+- Read SESSION_3_COMPLETE.md for full context
+- Check README.md for overview
+- Review this QUICK_START.md for commands
+
+**Remember:**
+- No coding experience needed
+- All steps explained clearly
+- Ask questions anytime
+- We do things correctly, not quickly
+
+---
+
+**Last Updated:** February 14, 2025  
+**Current Status:** All hardware installed and tested  
+**Next Steps:** Equipment integration (pumps, valves, heaters)
