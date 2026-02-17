@@ -74,3 +74,5 @@ tmp/
 # Raspberry Pi specific
 *.img
 *.iso
+feh_*.jpg
+*.broken
