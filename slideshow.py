@@ -23,6 +23,7 @@ disp.begin()
 
 current_image_path = None
 current_image_lock = threading.Lock()
+feh_process = None
 
 BASE_IMAGES = [
     "https://static.wixstatic.com/media/9f3037c83ca048ddb0485e3badb0a6a3.jpg",
@@ -81,9 +82,20 @@ def prepare_hdmi(img, sw, sh):
     return img.crop((left, top, left + sw, top + sh))
 
 def show_hdmi(path):
+    global feh_process
     try:
-        subprocess.Popen(
-            ['sudo', '-u', 'pi', 'feh', '--fullscreen', '--no-menus', path],
+        if feh_process:
+            try:
+                feh_process.terminate()
+            except:
+                pass
+        
+        subprocess.run(['pkill', '-f', 'feh.*current.jpg'], stderr=subprocess.DEVNULL)
+        time.sleep(0.1)
+        
+        feh_process = subprocess.Popen(
+            ['sudo', '-u', 'pi', 'feh', '--fullscreen', '--auto-zoom', 
+             '--hide-pointer', '--no-menus', '--reload', '1', path],
             env={'DISPLAY': ':0', 'XAUTHORITY': '/home/pi/.Xauthority'}
         )
     except Exception as e:
@@ -122,6 +134,13 @@ def run_slideshow():
     disp.display(current)
     last_refresh = time.time()
     
+    # Start feh once at beginning
+    hdmi_path = '/tmp/distillery_images/current.jpg'
+    blank = Image.new('RGB', (1024, 600), (0, 0, 0))
+    blank.save(hdmi_path, 'JPEG')
+    show_hdmi(hdmi_path)
+    time.sleep(1)
+    
     while True:
         if time.time() - last_refresh > 600:
             image_urls = fetch_fresh_images()
@@ -134,22 +153,20 @@ def run_slideshow():
         img_round = download_image(url_round)
         img_hdmi = download_image(url_hdmi)
         
-        if img_round and img_hdmi: 
+        if img_round and img_hdmi:
             round_img = prepare_round(img_round)
-            print(f"Round prepared: {round_img.size}, {round_img.mode}")
             hdmi_img = prepare_hdmi(img_hdmi, 1024, 600)
-            print(f"HDMI prepared: {hdmi_img.size}")            
-            hdmi_path = '/tmp/distillery_images/current.jpg'
+            
+            # Save HDMI image - feh will auto-reload it
             hdmi_img.save(hdmi_path, 'JPEG', quality=90)
             
             with current_image_lock:
                 current_image_path = hdmi_path
             
-            show_hdmi(hdmi_path)
-            print("Fading round display...")
+            # Round display fade
             fade(current, round_img)
             current = round_img
-            print("Round display updated!")            
+            
             print("Displaying 30s...")
             time.sleep(30)
         else:
@@ -166,3 +183,5 @@ if __name__ == '__main__':
         print("\nExiting...")
         blank = Image.new('RGB', (240, 240), (0, 0, 0))
         disp.display(blank)
+        if feh_process:
+            feh_process.terminate()
