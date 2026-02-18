@@ -13239,3 +13239,11 @@ Palmeri Assistant voice AI.
 **Next Major Milestone:** Voice-controlled AI assistant with visual avatar
 
 
+## Important Working Notes
+
+### Code Pasting Rule
+When Claude sends code to paste into a file, the code block must contain
+ONLY the code - no instructions, no notes, no explanations inside it.
+All instructions go outside the code block. Jascha selects all and copies,
+so anything extra inside the block will break the file.
+EOF
