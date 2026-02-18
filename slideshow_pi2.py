@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""
-Palmeri Distillery Slideshow - Pi #2
-Fetches its own random images independently
-"""
-
 import requests
 import random
 import time
+import threading
 import subprocess
 import os
 from PIL import Image
 from GC9A01 import GC9A01
 from io import BytesIO
+
+# Wait for desktop to be ready on boot
+time.sleep(15)
 
 BASE_IMAGES = [
     "https://static.wixstatic.com/media/9f3037c83ca048ddb0485e3badb0a6a3.jpg",
@@ -22,7 +21,7 @@ BASE_IMAGES = [
     "https://static.wixstatic.com/media/b48252_af7ef6a2b3c94556a03f5d32005f1104~mv2.jpg",
 ]
 
-disp = GC9A01(port=0, cs=0, dc=25, rst=24, backlight=None, 
+disp = GC9A01(port=0, cs=0, dc=25, rst=24, backlight=None,
               spi_speed_hz=80000000, width=240, height=240)
 disp.begin()
 
@@ -64,7 +63,7 @@ def prepare_hdmi(img, sw, sh):
 def show_hdmi(path):
     try:
         subprocess.Popen(
-            ['feh', '--fullscreen', '--no-menus', path],
+            ['feh', '--fullscreen', '--auto-zoom', '--hide-pointer', '--no-menus', '--reload', '1', path],
             env={
                 'DISPLAY': ':0',
                 'XAUTHORITY': '/home/pi/.Xauthority',
@@ -85,38 +84,50 @@ def fade(img1, img2, steps=15):
 os.makedirs('/tmp/distillery_images', exist_ok=True)
 
 print("Palmeri Slideshow - Pi #2")
-print("Fetching own random images")
 
 current = Image.new('RGB', (240, 240), (0, 0, 0))
 disp.display(current)
 
+hdmi_path = '/tmp/distillery_images/current_pi2.jpg'
+blank = Image.new('RGB', (800, 480), (0, 0, 0))
+blank.save(hdmi_path, 'JPEG')
+show_hdmi(hdmi_path)
+time.sleep(1)
+
+print("Pre-loading first images...")
+url_round = random.choice(BASE_IMAGES)
+url_hdmi = random.choice([u for u in BASE_IMAGES if u != url_round])
+next_round = download_image(url_round)
+next_hdmi = download_image(url_hdmi)
+
 while True:
-    try:
-        # Pick 2 different random images
-        url_round = random.choice(BASE_IMAGES)
-        url_hdmi = random.choice([u for u in BASE_IMAGES if u != url_round])
-        
-        print("Loading images...")
-        img_round = download_image(url_round)
-        img_hdmi = download_image(url_hdmi)
-        
-        if img_round and img_hdmi:
-            round_img = prepare_round(img_round)
-            hdmi_img = prepare_hdmi(img_hdmi, 800, 480)
-            
-            hdmi_path = '/tmp/distillery_images/current_pi2.jpg'
-            hdmi_img.save(hdmi_path, 'JPEG', quality=90)
-            
-            show_hdmi(hdmi_path)
-            fade(current, round_img)
-            current = round_img
-            
-            print("Displaying 30s...")
-            time.sleep(30)
-        else:
-            print("Download failed, retrying...")
-            time.sleep(5)
-            
-    except Exception as e:
-        print(f"Error: {e}")
+    img_round = next_round
+    img_hdmi = next_hdmi
+
+    next_round = [None]
+    next_hdmi = [None]
+    next_url_round = random.choice(BASE_IMAGES)
+    next_url_hdmi = random.choice([u for u in BASE_IMAGES if u != next_url_round])
+
+    def prefetch(ur=next_url_round, uh=next_url_hdmi):
+        next_round[0] = download_image(ur)
+        next_hdmi[0] = download_image(uh)
+
+    prefetch_thread = threading.Thread(target=prefetch, daemon=True)
+    prefetch_thread.start()
+
+    if img_round and img_hdmi:
+        round_img = prepare_round(img_round)
+        hdmi_img = prepare_hdmi(img_hdmi, 800, 480)
+        hdmi_img.save(hdmi_path, 'JPEG', quality=90)
+
+        fade(current, round_img)
+        current = round_img
+        print("Displaying 30s...")
+        time.sleep(30)
+    else:
         time.sleep(5)
+
+    prefetch_thread.join(timeout=5)
+    next_round = next_round[0] or download_image(random.choice(BASE_IMAGES))
+    next_hdmi = next_hdmi[0] or download_image(random.choice(BASE_IMAGES))
