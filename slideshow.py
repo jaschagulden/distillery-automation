@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """
 Palmeri Distillery Website Slideshow - Pi #1
@@ -17,7 +18,7 @@ import os
 
 app = Flask(__name__)
 
-disp = GC9A01(port=0, cs=0, dc=25, rst=24, backlight=None, 
+disp = GC9A01(port=0, cs=0, dc=25, rst=24, backlight=None,
               spi_speed_hz=80000000, width=240, height=240)
 disp.begin()
 
@@ -89,12 +90,10 @@ def show_hdmi(path):
                 feh_process.terminate()
             except:
                 pass
-        
         subprocess.run(['pkill', '-f', 'feh.*current.jpg'], stderr=subprocess.DEVNULL)
         time.sleep(0.1)
-        
         feh_process = subprocess.Popen(
-            ['sudo', '-u', 'pi', 'feh', '--fullscreen', '--auto-zoom', 
+            ['sudo', '-u', 'pi', 'feh', '--fullscreen', '--auto-zoom',
              '--hide-pointer', '--no-menus', '--reload', '1', path],
             env={'DISPLAY': ':0', 'XAUTHORITY': '/home/pi/.Xauthority'}
         )
@@ -125,58 +124,74 @@ def run_flask():
 def run_slideshow():
     global current_image_path
     os.makedirs('/tmp/distillery_images', exist_ok=True)
-    
+
     print("Palmeri Slideshow - Pi #1")
     image_urls = fetch_fresh_images()
     print(f"Found {len(image_urls)} images")
-    
+
     current = Image.new('RGB', (240, 240), (0, 0, 0))
     disp.display(current)
     last_refresh = time.time()
-    
-    # Start feh once at beginning
+
     hdmi_path = '/tmp/distillery_images/current.jpg'
     blank = Image.new('RGB', (1024, 600), (0, 0, 0))
     blank.save(hdmi_path, 'JPEG')
     show_hdmi(hdmi_path)
     time.sleep(1)
-    
+
+    # Pre-download first pair of images
+    print("Pre-loading first images...")
+    url_round = random.choice(image_urls)
+    url_hdmi = random.choice([u for u in image_urls if u != url_round])
+    next_round = download_image(url_round)
+    next_hdmi = download_image(url_hdmi)
+
     while True:
         if time.time() - last_refresh > 600:
             image_urls = fetch_fresh_images()
             last_refresh = time.time()
-        
-        url_round = random.choice(image_urls)
-        url_hdmi = random.choice([u for u in image_urls if u != url_round])
-        
-        print("Loading...")
-        img_round = download_image(url_round)
-        img_hdmi = download_image(url_hdmi)
-        
+
+        img_round = next_round
+        img_hdmi = next_hdmi
+
+        # Start prefetching next images in background
+        next_round = [None]
+        next_hdmi = [None]
+        next_url_round = random.choice(image_urls)
+        next_url_hdmi = random.choice([u for u in image_urls if u != next_url_round])
+
+        def prefetch(ur=next_url_round, uh=next_url_hdmi):
+            next_round[0] = download_image(ur)
+            next_hdmi[0] = download_image(uh)
+
+        prefetch_thread = threading.Thread(target=prefetch, daemon=True)
+        prefetch_thread.start()
+
         if img_round and img_hdmi:
             round_img = prepare_round(img_round)
             hdmi_img = prepare_hdmi(img_hdmi, 1024, 600)
-            
-            # Save HDMI image - feh will auto-reload it
             hdmi_img.save(hdmi_path, 'JPEG', quality=90)
-            
+
             with current_image_lock:
                 current_image_path = hdmi_path
-            
-            # Round display fade
+
             fade(current, round_img)
             current = round_img
-            
             print("Displaying 30s...")
             time.sleep(30)
         else:
             time.sleep(5)
 
+        # Wait for prefetch to finish
+        prefetch_thread.join(timeout=5)
+        next_round = next_round[0] or download_image(random.choice(image_urls))
+        next_hdmi = next_hdmi[0] or download_image(random.choice(image_urls))
+
 if __name__ == '__main__':
     flask_thread = threading.Thread(target=run_flask, daemon=True)
     flask_thread.start()
     print("Image server: port 5001")
-    
+
     try:
         run_slideshow()
     except KeyboardInterrupt:
@@ -185,3 +200,4 @@ if __name__ == '__main__':
         disp.display(blank)
         if feh_process:
             feh_process.terminate()
+
