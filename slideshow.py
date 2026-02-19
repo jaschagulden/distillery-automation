@@ -15,7 +15,7 @@ from io import BytesIO
 from flask import Flask, send_file, jsonify
 import subprocess
 import os
-
+time.sleep(15)
 app = Flask(__name__)
 
 disp = GC9A01(port=0, cs=0, dc=25, rst=24, backlight=None,
