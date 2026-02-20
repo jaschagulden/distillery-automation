@@ -13247,3 +13247,47 @@ ONLY the code - no instructions, no notes, no explanations inside it.
 All instructions go outside the code block. Jascha selects all and copies,
 so anything extra inside the block will break the file.
 EOF
+
+
+## Session 6 Addendum - February 20, 2026
+
+### Pi 3 (palmeri-ai - 192.168.0.33) - AI Avatar Kiosk
+
+**Hardware:**
+- Raspberry Pi 5 (8GB)
+- AI HAT+ (13 TOPS)
+- 10.1" portrait touchscreen (1024x600, rotated 90 degrees)
+- Console autologin as pi on tty1
+
+**Kiosk Display - WORKING:**
+- Two American Gothic avatars side by side
+- Woman (left) = Farm/Garden
+- Man (right) = Distillery
+- Full portrait screen, black borders, correct aspect ratio
+- Runs automatically on boot, no manual steps needed
+
+**How it starts:**
+- ~/.bash_profile launches cage on tty1 autologin
+- cage handles Wayland compositor with full seat access
+- wlr-randr rotates screen 90 degrees inside cage session
+- pygame displays avatars fullscreen
+
+**Key files on Pi 3:**
+- ~/palmeri-ai/avatar_display.py - pygame display script
+- ~/.bash_profile - launches cage on autologin
+
+**To reconnect to Pi 3:**
+- ssh pi@192.168.0.33
+
+**Next Steps for Pi 3:**
+- Add voice AI using Whisper (speech to text)
+- Add Piper TTS (text to speech)
+- Add local LLM via AI HAT+
+- Animate avatars (speaking/listening states)
+- Connect to sensor data from Pi 1
+
+**Note for next Claude:**
+- Jascha has no coding background, give step by step instructions
+- Always provide complete clean files to paste, never ask Jascha to edit code
+- Test before moving forward
+- Pi 3 is separate from Pi 1 and Pi 2 - it is the dedicated AI node
