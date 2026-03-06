@@ -34,13 +34,17 @@ eleven = ElevenLabs(api_key=ELEVENLABS_API_KEY)
 print("All models loaded!")
 
 def speak(text, voice_id):
+    print("SPEAK: calling ElevenLabs API...")
     audio = eleven.text_to_speech.convert(
         voice_id=voice_id,
         text=text,
         model_id="eleven_turbo_v2"
     )
+    print("SPEAK: saving MP3...")
     save(audio, '/tmp/palmeri_speech.mp3')
+    print("SPEAK: playing audio...")
     subprocess.run(['mpg123', '-q', '-a', 'hw:2,0', '/tmp/palmeri_speech.mp3'])
+    print("SPEAK: done.")
 
 def record_until_silence():
     print("Listening...")
@@ -87,7 +91,7 @@ def main():
         if not text or len(text.strip()) < 3:
             continue
         print(f"You said: {text}")
-        speak("Let me think about that.", NAN_VOICE_ID)
+        subprocess.run(['mpg123', '-q', '-a', 'hw:2,0', '/home/pi/palmeri-ai/thinking.mp3'])
         print("Asking LLM...")
         response = ask_llm(text)
         print(f"Response: {response}")
