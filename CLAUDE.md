@@ -38,17 +38,14 @@ Raspberry Pi-based automation system for a small-scale distillery. Three-Pi netw
 
 ## Architecture Direction
 
-We are implementing an interface-first architecture. Read these before writing new code:
-- `docs/architecture_from_tim.md` — high-level rationale and proposals (start here)
-- `docs/architecture_technical.md` — technical reference
+**Status: proposals under review — not yet agreed.**
+Tim has prepared architectural suggestions that Jascha is reviewing. Until that review is complete, do not assume any architectural pattern is settled.
 
-**Core pattern:** All hardware is accessed through ABCs defined in `src/hardware/interfaces.py` (not yet written). Every hardware type has both a real driver and a simulator implementation. Control logic is written against interfaces only, never concrete drivers.
+Review documents:
+- `docs/architecture_from_tim.md` — Tim's proposals in plain language; start here
+- `docs/architecture_technical.md` — implementation detail for each proposal
 
-**Build order:**
-1. `src/hardware/interfaces.py` (ABCs)
-2. `src/hardware/simulator/` (fake hardware)
-3. `src/safety/safety_monitor.py` ← **before any sequences run on real hardware**
-4. Controllers, then sequences
+**After Jascha completes his review with Claude Code, this section should be updated** to replace the above with the agreed architecture, build order, and any constraints on new code. Until then, the only firm rules are in the Safety Rules section below.
 
 ---
 
@@ -78,8 +75,10 @@ Correct assignments must come from actual Pi 1 wiring. Do not write drivers unti
 
 ## Collaboration
 
-- **Jascha** (owner): hardware expert, writes hardware drivers (`src/hardware/drivers/`), resolves pin assignments
-- **Tgulden** (collaborator): writes interfaces, simulator, safety monitor, controllers, sequences
+- **Jascha** (owner): hardware expert, primary developer; works directly with Claude Code
+- **Tgulden** (collaborator): software architecture; proposes changes via PRs for Jascha to review
+
+Work split for new code will be agreed during the architecture review. Until then, Jascha drives all implementation decisions.
 
 Branch strategy:
 - `main` — deployed to Pi 1, protected (PRs required)
@@ -109,7 +108,7 @@ ssh pi@192.168.0.31
 
 ## Docs & Session Notes
 
-- `docs/architecture_for_jascha.md` — architecture overview in plain language
+- `docs/architecture_from_tim.md` — Tim's architectural proposals (plain language)
 - `docs/architecture_technical.md` — technical architecture reference
 - `docs/hardware_specs.md` — hardware details
 - `docs/operational_manual.md` — operating instructions

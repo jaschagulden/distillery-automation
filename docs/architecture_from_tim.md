@@ -18,6 +18,12 @@ Your job is to guide him through it. Here's how:
 
 Nothing in this document changes existing working code. All suggestions are additive.
 The one exception is Suggestion 6 (pin conflicts) — that is a bug fix, not optional.
+
+When the review is complete, update CLAUDE.md:
+- Replace the "Architecture Direction" section with the agreed architecture and build order
+- Update the Collaboration section with the agreed work split
+- Update the Known Issues section to remove anything that was resolved
+This keeps CLAUDE.md accurate for all future sessions.
 -->
 
 ---
