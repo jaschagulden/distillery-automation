@@ -203,11 +203,11 @@ CLAUDE.md is the starting context for every CC session — keep it accurate. Upd
 | File | What it is |
 |------|-----------|
 | `README.md` | Project overview and hardware setup |
-| `ARCHITECTURE.md` | **Functional and technical spec** — state machine, component responsibilities, data flow. Treat this as authoritative when making design decisions. |
-| `docs/architecture_from_tim.md` | Tim's architectural proposals |
-| `docs/architecture_from_tim_detail.md` | Implementation detail for proposals |
-| `docs/hardware_specs.md` | Hardware specifications and wiring |
-| `docs/operational_manual.md` | Operating procedures |
+| `ARCHITECTURE.md` | **Functional and technical spec** (Jascha's design) — state machine, component responsibilities, data flow. Treat this as authoritative when making design decisions. |
+| `docs/architecture_from_tim.md` | Tim's architectural proposals (temporary — see lifecycle note above) |
+| `docs/architecture_from_tim_detail.md` | Tim's implementation detail (temporary — see lifecycle note above) |
+| `docs/hardware_specs.md` | Hardware specifications and wiring (Jascha's) |
+| `docs/operational_manual.md` | Operating procedures (Jascha's) |
 | `QUICK_START.md` | Fast reference for common commands |
 | `config/hardware_config.yaml` | GPIO pin assignments and safety limits |
 | `SESSION_*.md` | Historical AI chat transcripts (context only) |
