@@ -209,5 +209,9 @@ CLAUDE.md is the starting context for every CC session — keep it accurate. Upd
 | `docs/hardware_specs.md` | Hardware specifications and wiring (Jascha's) |
 | `docs/operational_manual.md` | Operating procedures (Jascha's) |
 | `QUICK_START.md` | Fast reference for common commands |
-| `config/hardware_config.yaml` | GPIO pin assignments and safety limits |
+| `config/hardware_config.yaml` | GPIO pin assignments and safety limits (Jascha's) |
+| `config/recipes/recipe_template.yaml` | Jascha's recipe design — PID params, cut targets, flow rates, CIP timing |
+| `docs/calibration_procedures.md` | Step-by-step sensor calibration procedures (Jascha's) |
 | `SESSION_*.md` | Historical AI chat transcripts (context only) |
+
+**Calibration data note:** `config/calibration/load_cells.yaml` and `config/calibration/thermocouples.yaml` are stubs (all placeholder values). The actual working calibration for the HX711 is in `calibration_data.txt`.
