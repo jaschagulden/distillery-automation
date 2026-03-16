@@ -164,6 +164,27 @@ Both collaborators push to `main` carefully. PRs used for anything structural.
 
 ---
 
+## Session Workflow
+
+**At the start of every session:** Read `NOTES.md` to pick up where the last session left off. CLAUDE.md has stable facts; NOTES.md has what's currently in progress.
+
+**At the end of every session:** Update `NOTES.md` — replace the previous session block with a new one. Keep it under 40 lines total. The format is in the template at the top of that file.
+
+**What goes in NOTES.md** (temporary — belongs to one session's handoff):
+- What was done this session
+- Decisions made that haven't been fully implemented yet
+- Anything in progress or partially done
+- Blockers
+- Next steps in priority order
+
+**What goes in CLAUDE.md instead** (permanent — settled project facts):
+- Anything that's now true about the project indefinitely (a new piece of hardware, an agreed architectural pattern, a resolved issue)
+- Move it from NOTES.md to CLAUDE.md and remove it from NOTES.md
+
+The SESSION_*.md files in the repo are historical transcripts from earlier sessions. They don't need to be read or maintained — the relevant facts have been captured in CLAUDE.md and NOTES.md.
+
+---
+
 ## Keeping This Document Current
 
 CLAUDE.md is the starting context for every CC session — keep it accurate. Update it when:
