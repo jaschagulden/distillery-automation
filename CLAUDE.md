@@ -203,7 +203,7 @@ CLAUDE.md is the starting context for every CC session — keep it accurate. Upd
 | File | What it is |
 |------|-----------|
 | `README.md` | Project overview and hardware setup |
-| `ARCHITECTURE.md` | System design and state machine diagram |
+| `ARCHITECTURE.md` | **Functional and technical spec** — state machine, component responsibilities, data flow. Treat this as authoritative when making design decisions. |
 | `docs/architecture_from_tim.md` | Tim's architectural proposals |
 | `docs/architecture_from_tim_detail.md` | Implementation detail for proposals |
 | `docs/hardware_specs.md` | Hardware specifications and wiring |
