@@ -394,6 +394,8 @@ The following GPIO pins are currently assigned to multiple devices:
 
 **This must be resolved with Jascha before any control code is written.** The correct pin assignments should come from the actual wiring on Pi 1, not the config file. The config file should be updated to match reality.
 
+Once resolved, remove the pin conflict table from the Known Issues section of `CLAUDE.md`.
+
 ### SESSION_*.md file size
 
 Session notes are full AI chat transcripts (SESSION_6 is 365KB). These should be replaced with concise summaries. The transcript content is not useful for code context and inflates the repo significantly.

@@ -14,7 +14,7 @@ Your job is to guide him through it. Here's how:
 3. After each suggestion, ask him the "Question for you" at the end of that section.
 4. Based on his answer: implement it, modify it to fit his vision, or skip it.
 5. For implementation detail on any suggestion, read the corresponding section of
-   docs/architecture_technical.md (section numbers match suggestion numbers).
+   docs/architecture_from_tim_detail.md (section numbers match suggestion numbers).
 
 Nothing in this document changes existing working code. All suggestions are additive.
 The one exception is Suggestion 6 (pin conflicts) — that is a bug fix, not optional.
@@ -23,6 +23,9 @@ When the review is complete, update CLAUDE.md:
 - Replace the "Architecture Direction" section with the agreed architecture and build order
 - Update the Collaboration section with the agreed work split
 - Update the Known Issues section to remove anything that was resolved
+
+Then delete both this file and `docs/architecture_from_tim_detail.md` — they have served their purpose and will cause confusion if left in place.
+
 This keeps CLAUDE.md accurate for all future sessions.
 -->
 
@@ -67,7 +70,7 @@ HeatingOutput (SSR):
 
 The PID controller, safety monitor, and all the sequences are then written against these definitions — not against the specific HAT or library. If you ever change the thermocouple HAT model, or add a second load cell type, nothing above the driver layer changes.
 
-**What Tim is suggesting we implement:** A file called `src/hardware/interfaces.py` that defines these contracts before any drivers are written. The technical details are in §3 of `architecture_technical.md`.
+**What Tim is suggesting we implement:** A file called `src/hardware/interfaces.py` that defines these contracts before any drivers are written. The technical details are in §3 of `architecture_from_tim_detail.md`.
 
 **Question for you:** Does this match how you think about it? Are there hardware types missing from the list above that we should define?
 
@@ -87,7 +90,7 @@ With this in place, the entire control sequence — Fill → Heat → Distill �
 
 This is exactly what you'd do with a prototype before committing to the production version.
 
-**What Tim is suggesting we implement:** A set of simulated hardware implementations in `src/hardware/simulator/`. These use the same interfaces as the real drivers (Suggestion 1) so they're drop-in replacements for testing. The technical details are in §4 of `architecture_technical.md`.
+**What Tim is suggesting we implement:** A set of simulated hardware implementations in `src/hardware/simulator/`. These use the same interfaces as the real drivers (Suggestion 1) so they're drop-in replacements for testing. The technical details are in §4 of `architecture_from_tim_detail.md`.
 
 **Question for you:** How rough is rough enough for the simulator to be useful to you? Just on/off states, or do you want it to behave more like the real thermal dynamics?
 
@@ -101,7 +104,7 @@ This is exactly what you'd do with a prototype before committing to the producti
 
 This also means the safety system can be read, audited, and tested completely separately from the control logic — a much smaller piece of code to review when you need to trust it.
 
-**What Tim is suggesting we implement:** `src/safety/safety_monitor.py`, running in its own thread, with direct sensor access and the ability to cut all outputs. Tim's strong suggestion is that this gets built *before* any automated sequences run on real hardware. The technical details are in §5 of `architecture_technical.md`.
+**What Tim is suggesting we implement:** `src/safety/safety_monitor.py`, running in its own thread, with direct sensor access and the ability to cut all outputs. Tim's strong suggestion is that this gets built *before* any automated sequences run on real hardware. The technical details are in §5 of `architecture_from_tim_detail.md`.
 
 **Question for you:** What are the conditions you'd want it to respond to? The config file has some limits defined (105°C max still temp, 220kg max weight, 30min max pump runtime) — do those match what you'd set if you were wiring a hardware interlock?
 
@@ -128,7 +131,7 @@ phases:
 
 Different grain bill, different cuts, different heat profile — new recipe file, no code change. This is exactly how you'd write a lab SOP.
 
-**What Tim is suggesting we implement:** A recipe schema (what fields a recipe can have) and a sequence engine that reads any recipe and executes it. The technical details are in §7 of `architecture_technical.md`.
+**What Tim is suggesting we implement:** A recipe schema (what fields a recipe can have) and a sequence engine that reads any recipe and executes it. The technical details are in §7 of `architecture_from_tim_detail.md`.
 
 **Question for you:** Looking at a real distillation run — what are the parameters you'd want to be able to dial in per recipe, vs. the ones that are fixed for the hardware?
 
@@ -151,7 +154,7 @@ Any Pi can subscribe to any topic. The voice AI answers "what's the temperature?
 
 This is a fairly small change to `sensor_server.py` and gives you a much more flexible network.
 
-**What Tim is suggesting we implement:** Mosquitto (MQTT broker) on Pi 1, and update `sensor_server.py` to publish to MQTT topics in addition to (or instead of) the Flask endpoints. The technical details are in §8 of `architecture_technical.md`.
+**What Tim is suggesting we implement:** Mosquitto (MQTT broker) on Pi 1, and update `sensor_server.py` to publish to MQTT topics in addition to (or instead of) the Flask endpoints. The technical details are in §8 of `architecture_from_tim_detail.md`.
 
 **Question for you:** Does the voice AI on Pi 3 currently pull from Pi 1's Flask endpoint, or does it read sensors locally? That affects how much work this is.
 
@@ -165,7 +168,7 @@ The hardware config file (`config/hardware_config.yaml`) currently assigns the s
 
 The correct pin assignments exist only in one place: the actual wiring on Pi 1. Before writing any driver code, we need to go through the config file with the real wiring in hand and make it accurate.
 
-**What we're asking:** Sit down with Pi 1, check the actual wiring, and correct `config/hardware_config.yaml`. CC can help you go through it pin by pin. The full conflict table is in §12 of `architecture_technical.md`.
+**What we're asking:** Sit down with Pi 1, check the actual wiring, and correct `config/hardware_config.yaml`. CC can help you go through it pin by pin. The full conflict table is in §12 of `architecture_from_tim_detail.md`.
 
 ---
 
@@ -204,7 +207,7 @@ To be clear about what Tim is *not* suggesting:
 
 When you're ready to work through these with CC, use this prompt:
 
-> "I'd like to review Tim's architectural suggestions with you. Please read `docs/architecture_from_tim.md` and `docs/architecture_technical.md`. Then let's go through the suggestions one at a time — I'll tell you what I agree with, what I want to change, and what I want to skip. For anything I agree with, help me implement it."
+> "I'd like to review Tim's architectural suggestions with you. Please read `docs/architecture_from_tim.md` and `docs/architecture_from_tim_detail.md`. Then let's go through the suggestions one at a time — I'll tell you what I agree with, what I want to change, and what I want to skip. For anything I agree with, help me implement it."
 
 CC will read both documents and walk you through each suggestion. You don't need to understand the technical details in advance — that's what CC is there to explain and implement.
 
