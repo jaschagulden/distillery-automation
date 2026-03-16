@@ -39,7 +39,7 @@ Raspberry Pi-based automation system for a small-scale distillery. Three-Pi netw
 ## Architecture Direction
 
 We are implementing an interface-first architecture. Read these before writing new code:
-- `docs/architecture_for_jascha.md` — high-level rationale (start here)
+- `docs/architecture_from_tim.md` — high-level rationale and proposals (start here)
 - `docs/architecture_technical.md` — technical reference
 
 **Core pattern:** All hardware is accessed through ABCs defined in `src/hardware/interfaces.py` (not yet written). Every hardware type has both a real driver and a simulator implementation. Control logic is written against interfaces only, never concrete drivers.

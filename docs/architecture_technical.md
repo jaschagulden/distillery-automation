@@ -1,7 +1,7 @@
 # Technical Architecture Reference
 ### Distillery Automation System — Implementation Detail
 
-*This is the companion to `docs/architecture_for_jascha.md`, which has the plain-language overview and the suggested workflow for working through these proposals with Claude Code. Read that document first.*
+*This is the companion to `docs/architecture_from_tim.md`, which has the plain-language overview and the suggested workflow for working through these proposals with Claude Code. Read that document first.*
 
 *Section numbers here correspond to the "for implementation detail, see §N" references in the high-level document. When working with Claude Code, you can ask it to "implement Suggestion 3" or "show me the detail for §5" and it will find the right section.*
 

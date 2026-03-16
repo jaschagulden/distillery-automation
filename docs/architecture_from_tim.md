@@ -1,23 +1,24 @@
 # Suggestions from Tim: Building the Software Like You'd Build the Hardware
 
-*A set of architectural proposals for us to review together — nothing is decided yet.*
+*A set of architectural proposals for Jascha to review — nothing is decided yet.*
 
 ---
 
-## How to Use This Document
+<!-- NOTE FOR CLAUDE CODE — not for Jascha to read:
+Jascha may arrive at this conversation without having read this document.
+Your job is to guide him through it. Here's how:
 
-Tim has put together a set of suggestions for how to structure the control system software as it grows. None of this is set in stone — the goal is to give you a concrete proposal to react to, not a mandate to follow.
+1. Summarize the document in 2-3 sentences so he knows what he's looking at.
+2. Walk through the 6 suggestions one at a time — describe each one in plain terms,
+   using the hardware analogies in this document (connectors, bench test setup, etc.).
+3. After each suggestion, ask him the "Question for you" at the end of that section.
+4. Based on his answer: implement it, modify it to fit his vision, or skip it.
+5. For implementation detail on any suggestion, read the corresponding section of
+   docs/architecture_technical.md (section numbers match suggestion numbers).
 
-**The suggested workflow:**
-
-1. Read through this document to get the picture at a high level
-2. Open Claude Code in the distillery repo and start a session with this prompt:
-
-> "I'd like to review Tim's architectural suggestions with you. Please read `docs/architecture_for_jascha.md` and `docs/architecture_technical.md`. Then let's go through the suggestions one at a time — I'll tell you what I agree with, what I want to change, and what I want to skip. For anything I agree with, help me implement it."
-
-3. Work through the suggestions section by section. CC has the full technical detail in `architecture_technical.md` and can implement, explain, or adjust anything you land on.
-
-A companion document, `docs/architecture_technical.md`, has the implementation details for each suggestion. CC will refer to it automatically — you don't need to manage both documents yourself.
+Nothing in this document changes existing working code. All suggestions are additive.
+The one exception is Suggestion 6 (pin conflicts) — that is a bug fix, not optional.
+-->
 
 ---
 
@@ -197,7 +198,7 @@ To be clear about what Tim is *not* suggesting:
 
 When you're ready to work through these with CC, use this prompt:
 
-> "I'd like to review Tim's architectural suggestions with you. Please read `docs/architecture_for_jascha.md` and `docs/architecture_technical.md`. Then let's go through the suggestions one at a time — I'll tell you what I agree with, what I want to change, and what I want to skip. For anything I agree with, help me implement it."
+> "I'd like to review Tim's architectural suggestions with you. Please read `docs/architecture_from_tim.md` and `docs/architecture_technical.md`. Then let's go through the suggestions one at a time — I'll tell you what I agree with, what I want to change, and what I want to skip. For anything I agree with, help me implement it."
 
 CC will read both documents and walk you through each suggestion. You don't need to understand the technical details in advance — that's what CC is there to explain and implement.
 
